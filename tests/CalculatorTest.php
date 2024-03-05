@@ -39,10 +39,30 @@ class CalculatorTest extends TestCase
     #[Test]
     function canSubtract(): void
     {
-        $input = '5-3';
+        $input = '5 - 3';
 
         $output = Calculator::calculate($input);
 
         $this->assertSame(2, $output);
+    }
+
+    #[Test]
+    function canSubtractMultiple(): void
+    {
+        $input = '5 - 3 - 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(0, $output);
+    }
+
+    #[Test]
+    function canAddAndSubtract(): void
+    {
+        $input = '5 + 3 - 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(6, $output);
     }
 }

@@ -9,9 +9,6 @@ class Calculator
         // split by operator
         $items = preg_split('/([+-])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
 
-        var_dump($items);
-
-
         foreach($items as $key => $item)
         {
             // even keys are operands
@@ -23,14 +20,19 @@ class Calculator
             };
         }
 
-        $first = $items[0];
-        $operator = $items[1];
-        $second = $items[2];
+        // until we have a single result
+        while(count($items) > 1) {
+            $first = $items[0];
+            $operator = $items[1];
+            $second = $items[2];
 
-        $items = array_slice($items, 3);
+            // remove the first three items
+            $items = array_slice($items, 3);
 
-        array_unshift($items, $operator->calculate($first, $second));
+            // and swap them out for the result of the calculation
+            array_unshift($items, $operator->calculate($first, $second));
+        }
 
-        return array_sum($items);
+        return $items[0];
     }
 }
