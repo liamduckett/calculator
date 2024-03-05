@@ -22,15 +22,30 @@ class Calculator
 
         // until we have a single result
         while(count($items) > 1) {
-            $first = $items[0];
-            $operator = $items[1];
-            $second = $items[2];
+            // multiplication needs to be
+            $multiply = array_search(Operator::MULTIPLY, $items);
 
-            // remove the first three items
-            $items = array_slice($items, 3);
+            $operatorIndex = match($multiply) {
+                false => 1,
+                default => $multiply,
+            };
+
+            $first = $items[$operatorIndex - 1];
+            $operator = $items[$operatorIndex];
+            $second = $items[$operatorIndex + 1];
+
+            // remove the above items
+            unset($items[$operatorIndex - 1]);
+            unset($items[$operatorIndex]);
+            unset($items[$operatorIndex + 1]);
 
             // and swap them out for the result of the calculation
-            array_unshift($items, $operator->calculate($first, $second));
+            $items[$operatorIndex] = $operator->calculate($first, $second);
+
+            // sort by key
+            ksort($items);
+
+            $items = array_values($items);
         }
 
         return $items[0];

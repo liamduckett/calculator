@@ -75,4 +75,24 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(15, $output);
     }
+
+    #[Test]
+    function canMultiplyAndAdd(): void
+    {
+        $input = '5 * 3 + 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(17, $output);
+    }
+
+    #[Test]
+    function canAddAndMultiply(): void
+    {
+        $input = '5 + 3 * 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(11, $output);
+    }
 }
