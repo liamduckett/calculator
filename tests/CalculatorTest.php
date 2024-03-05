@@ -95,4 +95,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(11, $output);
     }
+
+    #[Test]
+    function allowsXinPlaceOfAsterisk(): void
+    {
+        $input = '5 + 3 x 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(11, $output);
+    }
 }

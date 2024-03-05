@@ -6,6 +6,9 @@ class Calculator
 {
     static function calculate(string $input): int
     {
+        // replace 'x' with '*'
+        $input = str_replace('x', '*', $input);
+
         // split by operator
         $items = preg_split('/([+\-*])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
 
