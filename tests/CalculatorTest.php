@@ -105,4 +105,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(11, $output);
     }
+
+    #[Test]
+    function canDivide(): void
+    {
+        $input = '15 / 3';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(5, $output);
+    }
 }

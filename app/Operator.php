@@ -7,6 +7,7 @@ enum Operator: string
     case ADD = '+';
     case SUBTRACT = '-';
     case MULTIPLY = '*';
+    case DIVIDE = '/';
 
     function calculate(int $first, int $second): int
     {
@@ -14,6 +15,7 @@ enum Operator: string
             self::ADD => $first + $second,
             self::SUBTRACT => $first - $second,
             self::MULTIPLY => $first * $second,
+            self::DIVIDE => $first / $second,
         };
     }
 }
