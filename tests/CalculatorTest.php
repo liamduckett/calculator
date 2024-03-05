@@ -115,4 +115,24 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(5, $output);
     }
+
+    #[Test]
+    function canDivideAndAdd(): void
+    {
+        $input = '15 / 3 + 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(7, $output);
+    }
+
+    #[Test]
+    function canAddAndDivide(): void
+    {
+        $input = '12 + 3 / 3';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(13, $output);
+    }
 }

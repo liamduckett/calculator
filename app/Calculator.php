@@ -25,13 +25,22 @@ class Calculator
 
         // until we have a single result
         while(count($items) > 1) {
-            // multiplication needs to be
+            // multiplication needs to be prioritised
             $multiply = array_search(Operator::MULTIPLY, $items);
+            $divide = array_search(Operator::DIVIDE, $items);
 
-            $operatorIndex = match($multiply) {
-                false => 1,
-                default => $multiply,
-            };
+            // if it has '*' then return index of it
+            if($multiply !== false) {
+                $operatorIndex = $multiply;
+            }
+            // elif it has '/' then return index of it
+            elseif($divide !== false) {
+                $operatorIndex = $divide;
+            }
+            // else return 1
+            else {
+                $operatorIndex = 1;
+            }
 
             $first = $items[$operatorIndex - 1];
             $operator = $items[$operatorIndex];
