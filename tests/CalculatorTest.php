@@ -1,6 +1,7 @@
 <?php
 
 use Liamduckett\Calculator\Calculator;
+use Liamduckett\Calculator\Exceptions\InvalidOperandException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -134,5 +135,35 @@ class CalculatorTest extends TestCase
         $output = Calculator::calculate($input);
 
         $this->assertSame(13, $output);
+    }
+
+    #[Test]
+    function rejectsMissingFirstOperand(): void
+    {
+        $this->expectException(InvalidOperandException::class);
+
+        $input = ' + 5';
+
+        Calculator::calculate($input);
+    }
+
+    #[Test]
+    function rejectsMissingSecondOperand(): void
+    {
+        $this->expectException(InvalidOperandException::class);
+
+        $input = '5 +';
+
+        Calculator::calculate($input);
+    }
+
+    #[Test]
+    function rejectsNonNumericOperand(): void
+    {
+        $this->expectException(InvalidOperandException::class);
+
+        $input = '5 + string';
+
+        Calculator::calculate($input);
     }
 }

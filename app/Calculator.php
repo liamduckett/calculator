@@ -2,14 +2,20 @@
 
 namespace Liamduckett\Calculator;
 
+use Exception;
+use Liamduckett\Calculator\Exceptions\InvalidOperandException;
+
 class Calculator
 {
+    /**
+     * @throws Exception
+     */
     static function calculate(string $input): int
     {
         // replace 'x' with '*'
         $input = str_replace('x', '*', $input);
 
-        // split by operator
+        // split by operator (accepts + - * and /)
         $items = preg_split('/([+\-*\/])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
 
         foreach($items as $key => $item)
@@ -18,7 +24,7 @@ class Calculator
             // odd  keys are operations
 
             $items[$key] = match($key % 2 === 0) {
-                true => (int) $item,
+                true => is_numeric($item) ? (int) $item : throw new InvalidOperandException,
                 false => Operator::from($item),
             };
         }
