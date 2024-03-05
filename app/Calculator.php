@@ -30,34 +30,16 @@ class Calculator
 
         // until we have a single result
         while($items->count() > 1) {
-            // multiplication needs to be prioritised
-            $multiply = array_search(Operator::MULTIPLY, $items->toArray());
-            $divide = array_search(Operator::DIVIDE, $items->toArray());
+            // return the index of the most pressing operation
+            $operatorIndex = $items->searchMultiple([Operator::MULTIPLY, Operator::DIVIDE], default: 1);
 
-            // if it has '*' then return index of it
-            if($multiply !== false) {
-                $operatorIndex = $multiply;
-            }
-            // elif it has '/' then return index of it
-            elseif($divide !== false) {
-                $operatorIndex = $divide;
-            }
-            // else return 1
-            else {
-                $operatorIndex = 1;
-            }
+            // extract the needed items for the most pressing operation
+            [$first, $operator, $second] = $items->slice($operatorIndex - 1, 3);
 
-            $first = $items[$operatorIndex - 1];
-            $operator = $items[$operatorIndex];
-            $second = $items[$operatorIndex + 1];
-
-            // remove the above items
+            // remove the above items and swap them out for the result of the calculation
             unset($items[$operatorIndex - 1]);
-            unset($items[$operatorIndex]);
-            unset($items[$operatorIndex + 1]);
-
-            // and swap them out for the result of the calculation
             $items[$operatorIndex] = $operator->calculate($first, $second);
+            unset($items[$operatorIndex + 1]);
 
             // sort by key
             $items = $items

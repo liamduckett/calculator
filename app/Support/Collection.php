@@ -49,6 +49,31 @@ class Collection implements ArrayAccess, Countable {
         return new self($items);
     }
 
+    function slice(int $offset, ?int $length = null, bool $preserveKeys = false): self
+    {
+        $items = array_slice($this->items, $offset, $length, $preserveKeys);
+        return new self($items);
+    }
+
+    function search(mixed $needle, bool $strict = true): false|int|string
+    {
+        return array_search($needle, $this->items, $strict);
+    }
+
+    function searchMultiple(array $needles, bool $strict = true, mixed $default = false): mixed
+    {
+        foreach($needles as $needle)
+        {
+            $search = array_search($needle, $this->items, $strict);
+
+            if($search !== false) {
+                return $search;
+            }
+        }
+
+        return $default;
+    }
+
     function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
