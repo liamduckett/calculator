@@ -1,0 +1,16 @@
+{
+    "name": "liamduckett/calculator",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Liamduckett\\Calculator\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Liam Duckett",
+            "email": "liamduckett2@gmail.com"
+        }
+    ],
+    "require": {}
+}
