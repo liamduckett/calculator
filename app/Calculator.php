@@ -4,6 +4,7 @@ namespace Liamduckett\Calculator;
 
 use Exception;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
+use Liamduckett\Calculator\Support\Str;
 
 class Calculator
 {
@@ -12,28 +13,26 @@ class Calculator
      */
     static function calculate(string $input): int
     {
-        // replace 'x' with '*'
-        $input = str_replace('x', '*', $input);
+        $items = Str::make($input)
+            // replace 'x' with '*'
+            ->replace(search: 'x', replace: '*')
+            // split by operator (accepts + - * and /)
+            ->pregSplit('/([+\-*\/])/', flags: PREG_SPLIT_DELIM_CAPTURE);
 
-        // split by operator (accepts + - * and /)
-        $items = preg_split('/([+\-*\/])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
-
-        foreach($items as $key => $item)
-        {
-            // even keys are operands
-            // odd  keys are operations
-
-            $items[$key] = match($key % 2 === 0) {
+        $items = $items->mapWithKeys(function(string $item, int $key) {
+            return match($key % 2 === 0) {
+                // even keys are operands
                 true => is_numeric($item) ? (int) $item : throw new InvalidOperandException,
+                // odd  keys are operators
                 false => Operator::from($item),
             };
-        }
+        });
 
         // until we have a single result
-        while(count($items) > 1) {
+        while($items->count() > 1) {
             // multiplication needs to be prioritised
-            $multiply = array_search(Operator::MULTIPLY, $items);
-            $divide = array_search(Operator::DIVIDE, $items);
+            $multiply = array_search(Operator::MULTIPLY, $items->toArray());
+            $divide = array_search(Operator::DIVIDE, $items->toArray());
 
             // if it has '*' then return index of it
             if($multiply !== false) {
@@ -61,9 +60,9 @@ class Calculator
             $items[$operatorIndex] = $operator->calculate($first, $second);
 
             // sort by key
-            ksort($items);
-
-            $items = array_values($items);
+            $items = $items
+                ->sortByKeys()
+                ->values();
         }
 
         return $items[0];
