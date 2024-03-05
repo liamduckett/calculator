@@ -65,4 +65,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(6, $output);
     }
+
+    #[Test]
+    function canMultiply(): void
+    {
+        $input = '5 * 3';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(15, $output);
+    }
 }

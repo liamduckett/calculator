@@ -7,7 +7,7 @@ class Calculator
     static function calculate(string $input): int
     {
         // split by operator
-        $items = preg_split('/([+-])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
+        $items = preg_split('/([+\-*])/', $input, flags: PREG_SPLIT_DELIM_CAPTURE);
 
         foreach($items as $key => $item)
         {
