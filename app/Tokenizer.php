@@ -16,7 +16,7 @@ class Tokenizer
             // remove whitespace either side
             ->trim();
 
-        $items = [];
+        $tokens = [];
         $item = '';
         $index = 0;
 
@@ -41,7 +41,7 @@ class Tokenizer
                 $index += 1;
                 // recursive call
                 $operand = static::tokenize($item);
-                $items[] = $operand;
+                $tokens[] = $operand;
                 $item = '';
             }
 
@@ -58,7 +58,7 @@ class Tokenizer
                 }
 
                 echo "operand: $item" . PHP_EOL;
-                $items[] = $item;
+                $tokens[] = $item;
                 $item = '';
             }
 
@@ -74,7 +74,7 @@ class Tokenizer
 
             // operator must be the current character
             echo "operator: {$input->charAt($index)->toString()}" . PHP_EOL;
-            $items[] = $input->charAt($index)->toString();
+            $tokens[] = $input->charAt($index)->toString();
             $index += 1;
 
             // skip any spaces
@@ -83,6 +83,6 @@ class Tokenizer
             }
         }
 
-        return $items;
+        return $tokens;
     }
 }
