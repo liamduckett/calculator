@@ -46,6 +46,12 @@ class Str implements Stringable
         return Collection::make($result);
     }
 
+    function trim(): self
+    {
+        $value = trim($this->value);
+        return new self($value);
+    }
+
     function toString(): string
     {
         return $this->value;

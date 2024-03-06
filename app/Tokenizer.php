@@ -12,7 +12,9 @@ class Tokenizer
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
             // allow use of '**' as '^'
-            ->replace(search: '**', replace: '^');
+            ->replace(search: '**', replace: '^')
+            // remove whitespace either side
+            ->trim();
 
         $items = [];
         $item = '';

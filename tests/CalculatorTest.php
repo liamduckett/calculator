@@ -227,4 +227,14 @@ class CalculatorTest extends TestCase
 
         Calculator::calculate($input);
     }
+
+    #[Test]
+    function allowSpaceEitherSide(): void
+    {
+        $input = ' 5 + 5 ';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(10, $output);
+    }
 }
