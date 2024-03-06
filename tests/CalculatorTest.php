@@ -263,8 +263,18 @@ class CalculatorTest extends TestCase
     {
         $this->expectException(InvalidOperandException::class);
 
-        $input = '()';
+        $input = '5 * 3 + ()';
 
         Calculator::calculate($input);
+    }
+
+    #[Test]
+    function respectsOrderOfExponent(): void
+    {
+        $input = '5 + 2 ^ 3';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(13, $output);
     }
 }

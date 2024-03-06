@@ -69,7 +69,10 @@ class Calculator
         while($expression->count() > 1) {
             // return the index of the most pressing operation
             // TODO: this feels like the bracket logic, should this be part of the parser?
-            $operatorIndex = $expression->searchMultiple([Operator::MULTIPLY, Operator::DIVIDE], default: 1);
+            $operatorIndex = $expression->searchMultiple(
+                [Operator::EXPONENTIATE, Operator::MULTIPLY, Operator::DIVIDE],
+                default: 1
+            );
 
             // extract the needed items for the most pressing operation
             [$first, $operator, $second] = $expression->slice($operatorIndex - 1, 3);
