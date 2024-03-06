@@ -207,4 +207,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(25, $output);
     }
+
+    #[Test]
+    function allowDoubleAsteriskAsExponentiation(): void
+    {
+        $input = '5 ** 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(25, $output);
+    }
 }

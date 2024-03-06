@@ -11,6 +11,8 @@ class Tokenizer
         $input = Str::make($input)
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
+            // allow use of '**' as '^'
+            ->replace(search: '**', replace: '^')
             // remove spaces
             ->replace(search: ' ', replace: '');
 
