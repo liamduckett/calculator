@@ -38,20 +38,23 @@ class Calculator
         // Next character HAS to be an operation
 
         while($index < $input->length()) {
+            $operand = null;
+
             // if we have an open bracket
             if($input->charAt($index)->toString() === '(') {
                 $index += 1;
 
                 // loop through until we find a closed bracket
                 while($input->charAt($index)->toString() !== ')') {
-                    $item .= $input->charAt($index);
+                    $item .= $input->charAt($index)->toString();
                     $index += 1;
                 }
 
                 // skip the closed bracket
                 $index += 1;
                 // recursive call
-                $items[] = static::tokenize($item);
+                $operand = static::tokenize($item);
+                $items[] = $operand;
                 $item = '';
             }
 
@@ -60,15 +63,16 @@ class Calculator
                 break;
             }
 
-            while($input->charAt($index)->isNumeric()) {
-                $item .= $input->charAt($index);
-                $index += 1;
-            }
+            // only look for regular operand if bracketed one wasn't found
+            if(!$operand) {
+                while($input->charAt($index)->isNumeric()) {
+                    $item .= $input->charAt($index)->toString();
+                    $index += 1;
+                }
 
-            // char is no longer numeric
-            // previous chars are first operand
-            $items[] = $item;
-            $item = '';
+                $items[] = $item;
+                $item = '';
+            }
 
             // there may not be an operator, this could be the end of the string...
             if($index === $input->length()) {
@@ -76,7 +80,7 @@ class Calculator
             }
 
             // operator must be the current character
-            $items[] = $input->charAt($index);
+            $items[] = $input->charAt($index)->toString();
             $index += 1;
         }
 
