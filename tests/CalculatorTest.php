@@ -197,4 +197,14 @@ class CalculatorTest extends TestCase
 
         Calculator::calculate($input);
     }
+
+    #[Test]
+    function canExponentiate(): void
+    {
+        $input = '5 ^ 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(25, $output);
+    }
 }

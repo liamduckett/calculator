@@ -8,6 +8,7 @@ enum Operator: string
     case SUBTRACT = '-';
     case MULTIPLY = '*';
     case DIVIDE = '/';
+    case EXPONENTIATE = '^';
 
     function calculate(int|Expression $first, int|Expression $second): int
     {
@@ -26,6 +27,7 @@ enum Operator: string
             self::SUBTRACT => $first - $second,
             self::MULTIPLY => $first * $second,
             self::DIVIDE => $first / $second,
+            self::EXPONENTIATE => $first ** $second,
         };
     }
 }
