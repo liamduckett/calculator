@@ -9,8 +9,18 @@ enum Operator: string
     case MULTIPLY = '*';
     case DIVIDE = '/';
 
-    function calculate(int $first, int $second): int
+    function calculate(int|Expression $first, int|Expression $second): int
     {
+        $first = match($first instanceof Expression) {
+            true => $first->result(),
+            false => $first,
+        };
+
+        $second = match($second instanceof Expression) {
+            true => $second->result(),
+            false => $second,
+        };
+
         return match($this) {
             self::ADD => $first + $second,
             self::SUBTRACT => $first - $second,
