@@ -27,8 +27,7 @@ class Calculator
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
             // remove spaces
-            ->replace(search: ' ', replace: '')
-            ->__toString();
+            ->replace(search: ' ', replace: '');
 
         $items = [];
         $item = '';
@@ -38,14 +37,14 @@ class Calculator
         // Look for operand, until a non-numeric character is found
         // Next character HAS to be an operation
 
-        while($index < strlen($input)) {
+        while($index < $input->length()) {
             // if we have an open bracket
-            if($input[$index] === '(') {
+            if($input->charAt($index)->toString() === '(') {
                 $index += 1;
 
                 // loop through until we find a closed bracket
-                while($input[$index] !== ')') {
-                    $item .= $input[$index];
+                while($input->charAt($index)->toString() !== ')') {
+                    $item .= $input->charAt($index);
                     $index += 1;
                 }
 
@@ -57,12 +56,12 @@ class Calculator
             }
 
             // there may not be an operand here, this could be the end of the string...
-            if($index === strlen($input)) {
+            if($index === $input->length()) {
                 break;
             }
 
-            while(is_numeric($input[$index])) {
-                $item .= $input[$index];
+            while($input->charAt($index)->isNumeric()) {
+                $item .= $input->charAt($index);
                 $index += 1;
             }
 
@@ -72,12 +71,12 @@ class Calculator
             $item = '';
 
             // there may not be an operator, this could be the end of the string...
-            if($index === strlen($input)) {
+            if($index === $input->length()) {
                 break;
             }
 
             // operator must be the current character
-            $items[] = $input[$index];
+            $items[] = $input->charAt($index);
             $index += 1;
         }
 

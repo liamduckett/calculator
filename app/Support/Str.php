@@ -25,6 +25,12 @@ class Str implements Stringable
         return is_numeric($this->value);
     }
 
+    function charAt(int $index): self
+    {
+        $value = $this->value[$index];
+        return new self($value);
+    }
+
     function replace(string $search, string $replace): self
     {
         $value = str_replace($search, $replace, $this->value);
@@ -40,8 +46,13 @@ class Str implements Stringable
         return Collection::make($result);
     }
 
-    function __toString(): string
+    function toString(): string
     {
         return $this->value;
+    }
+
+    function __toString(): string
+    {
+        return $this->toString();
     }
 }
