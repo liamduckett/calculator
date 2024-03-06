@@ -237,4 +237,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(10, $output);
     }
+
+    #[Test]
+    function allowsNestedBrackets(): void
+    {
+        $input = '((5 + 3) * 2)';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(16, $output);
+    }
 }

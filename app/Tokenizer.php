@@ -11,6 +11,8 @@ class Tokenizer
 
     static function tokenize(string $input): array
     {
+        echo "calling with $input" . PHP_EOL;
+
         $input = Str::make($input)
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
@@ -84,16 +86,28 @@ class Tokenizer
         $operand = null;
 
         if($this->currentCharacter()->is('(')) {
+            $openedBrackets = 1;
+
             $this->incrementCharacter();
 
             // loop through until we find a closed bracket
-            while($this->currentCharacter()->isnt(')')) {
+            while($openedBrackets > 0) {
                 $operand .= $this->currentCharacter();
+
+                if($this->currentCharacter()->is('(')) {
+                    $openedBrackets += 1;
+                }
+
+                if($this->currentCharacter()->is(')')) {
+                    $openedBrackets -= 1;
+                }
+
                 $this->incrementCharacter();
             }
 
-            // skip the closed bracket
-            $this->incrementCharacter();
+            // remove the closing bracket
+            $operand = substr($operand, 0, -1);
+
             // recursive call for brackets
             $this->tokens[] = static::tokenize($operand);
         }
