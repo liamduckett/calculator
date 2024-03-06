@@ -166,4 +166,14 @@ class CalculatorTest extends TestCase
 
         Calculator::calculate($input);
     }
+
+    #[Test]
+    function allowsBrackets(): void
+    {
+        $input = '(5 + 3)';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(8, $output);
+    }
 }

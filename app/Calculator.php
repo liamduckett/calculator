@@ -4,9 +4,8 @@ namespace Liamduckett\Calculator;
 
 use Exception;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
-use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
-use Liamduckett\Calculator\Exceptions\MissingLastOperandException;
 use Liamduckett\Calculator\Support\Collection;
+use Liamduckett\Calculator\Support\Str;
 
 class Calculator
 {
@@ -22,12 +21,14 @@ class Calculator
         return static::resolve($expression);
     }
 
-    protected static function tokenize(string $input): Collection
+    protected static function tokenize(string $input): array
     {
-        // allow use of 'x' as '*'
-        $input = str_replace('x', '*', $input);
-        // remove spaces
-        $input = str_replace(' ', '', $input);
+        $input = Str::make($input)
+            // allow use of 'x' as '*'
+            ->replace(search: 'x', replace: '*')
+            // remove spaces
+            ->replace(search: ' ', replace: '')
+            ->__toString();
 
         $items = [];
         $item = '';
@@ -38,6 +39,28 @@ class Calculator
         // Next character HAS to be an operation
 
         while($index < strlen($input)) {
+            // if we have an open bracket
+            if($input[$index] === '(') {
+                $index += 1;
+
+                // loop through until we find a closed bracket
+                while($input[$index] !== ')') {
+                    $item .= $input[$index];
+                    $index += 1;
+                }
+
+                // skip the closed bracket
+                $index += 1;
+                // recursive call
+                $items[] = static::tokenize($item);
+                $item = '';
+            }
+
+            // there may not be an operand here, this could be the end of the string...
+            if($index === strlen($input)) {
+                break;
+            }
+
             while(is_numeric($input[$index])) {
                 $item .= $input[$index];
                 $index += 1;
@@ -58,35 +81,55 @@ class Calculator
             $index += 1;
         }
 
-        return new Collection($items);
+        return $items;
     }
 
     /**
      * @throws InvalidOperandException
      */
-    protected static function parse(Collection $tokens): Collection
+    protected static function parse(array $tokens): array
     {
-        $tokens = $tokens->mapWithKeys(function(string $item, int $key) {
-            return match($key % 2 === 0) {
-                // even keys are operands
-                true => is_numeric($item) ? (int) $item : throw new InvalidOperandException,
-                // odd  keys are operators
-                false => Operator::from($item),
-            };
+        // TODO: this returns an array of an array
+        //  the non bracketed version returns an array
+
+        $tokens = new Collection($tokens);
+
+        $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
+            if($key % 2 === 0) {
+                if(is_array($item)) {
+                    return static::parse($item);
+                }
+
+                return is_numeric($item) ? (int) $item : throw new InvalidOperandException;
+            } else {
+                return Operator::from($item);
+            }
         });
 
         if($tokens[array_key_last($tokens->toArray())] instanceof Operator) {
             throw new InvalidOperandException;
         }
 
-        return $tokens;
+        $tokens = $tokens->mapWithKeys(function(int|Operator|array $item, int $key) {
+            // array is for nested (bracketed) operations
+            if($key % 2 === 0 and is_array($item)) {
+                return new Expression(...$item);
+            }
+
+            return $item;
+        });
+
+        return $tokens->toArray();
     }
 
-    protected static function resolve(Collection $expression): int
+    protected static function resolve(array $expression): int
     {
+        $expression = new Collection($expression);
+
         // until we have a single result
         while($expression->count() > 1) {
             // return the index of the most pressing operation
+            // TODO: this feels like the bracket logic, should this be part of the parser?
             $operatorIndex = $expression->searchMultiple([Operator::MULTIPLY, Operator::DIVIDE], default: 1);
 
             // extract the needed items for the most pressing operation
@@ -101,6 +144,10 @@ class Calculator
             $expression = $expression
                 ->sortByKeys()
                 ->values();
+        }
+
+        if($expression[0] instanceof Expression) {
+            return $expression[0]->result();
         }
 
         return $expression[0];

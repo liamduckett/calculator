@@ -15,6 +15,16 @@ class Str implements Stringable
         return new self($value);
     }
 
+    function length(): int
+    {
+        return strlen($this->value);
+    }
+
+    function isNumeric(): bool
+    {
+        return is_numeric($this->value);
+    }
+
     function replace(string $search, string $replace): self
     {
         $value = str_replace($search, $replace, $this->value);
