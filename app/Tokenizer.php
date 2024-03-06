@@ -11,8 +11,6 @@ class Tokenizer
 
     static function tokenize(string $input): array
     {
-        echo "calling with $input" . PHP_EOL;
-
         $input = Str::make($input)
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
