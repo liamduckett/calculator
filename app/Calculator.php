@@ -4,6 +4,7 @@ namespace Liamduckett\Calculator;
 
 use Exception;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
+use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
 use Liamduckett\Calculator\Support\Collection;
 
 class Calculator
@@ -22,6 +23,7 @@ class Calculator
 
     /**
      * @throws InvalidOperandException
+     * @throws InvalidOperatorException
      */
     protected static function parse(array $tokens): array
     {
@@ -35,7 +37,7 @@ class Calculator
 
                 return is_numeric($item) ? (int) $item : throw new InvalidOperandException;
             } else {
-                return Operator::from($item);
+                return Operator::tryFrom($item) ?? throw new InvalidOperatorException;
             }
         });
 

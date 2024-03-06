@@ -2,6 +2,7 @@
 
 use Liamduckett\Calculator\Calculator;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
+use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -185,5 +186,15 @@ class CalculatorTest extends TestCase
         $output = Calculator::calculate($input);
 
         $this->assertSame(10, $output);
+    }
+
+    #[Test]
+    function rejectsInvalidOperand(): void
+    {
+        $this->expectException(InvalidOperatorException::class);
+
+        $input = '5 £ 2';
+
+        Calculator::calculate($input);
     }
 }
