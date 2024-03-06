@@ -17,7 +17,6 @@ class Tokenizer
             ->trim();
 
         $tokens = [];
-        $item = '';
         $index = 0;
 
         // Loop through the string
@@ -33,16 +32,14 @@ class Tokenizer
 
                 // loop through until we find a closed bracket
                 while($input->charAt($index)->toString() !== ')') {
-                    $item .= $input->charAt($index)->toString();
+                    $operand .= $input->charAt($index)->toString();
                     $index += 1;
                 }
 
                 // skip the closed bracket
                 $index += 1;
                 // recursive call
-                $operand = static::tokenize($item);
-                $tokens[] = $operand;
-                $item = '';
+                $tokens[] = static::tokenize($operand);
             }
 
             // there may not be an operand here, this could be the end of the string...
@@ -52,14 +49,14 @@ class Tokenizer
 
             // only look for regular operand if bracketed one wasn't found
             if(!$operand) {
+                $operand = '';
+
                 while($input->charAt($index)->isNumeric()) {
-                    $item .= $input->charAt($index)->toString();
+                    $operand .= $input->charAt($index)->toString();
                     $index += 1;
                 }
 
-                echo "operand: $item" . PHP_EOL;
-                $tokens[] = $item;
-                $item = '';
+                $tokens[] = $operand;
             }
 
             // there may not be an operator, this could be the end of the string...
@@ -72,8 +69,7 @@ class Tokenizer
                 $index += 1;
             }
 
-            // operator must be the current character
-            echo "operator: {$input->charAt($index)->toString()}" . PHP_EOL;
+            // operators are only 1 character long
             $tokens[] = $input->charAt($index)->toString();
             $index += 1;
 
