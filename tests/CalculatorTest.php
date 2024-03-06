@@ -257,4 +257,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(48, $output);
     }
+
+    #[Test]
+    function rejectsJustBrackets(): void
+    {
+        $this->expectException(InvalidOperandException::class);
+
+        $input = '()';
+
+        Calculator::calculate($input);
+    }
 }

@@ -32,6 +32,10 @@ class Calculator
         $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
             if($key % 2 === 0) {
                 if(is_array($item)) {
+                    if(empty($item)) {
+                        throw new InvalidOperandException;
+                    }
+
                     return static::parse($item);
                 }
 
