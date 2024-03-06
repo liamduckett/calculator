@@ -217,4 +217,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(25, $output);
     }
+
+    #[Test]
+    function rejectsDoubleOperandWithSpaceBetween(): void
+    {
+        $this->expectException(InvalidOperatorException::class);
+
+        $input = '5 5 + 5';
+
+        Calculator::calculate($input);
+    }
 }

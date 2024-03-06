@@ -12,9 +12,7 @@ class Tokenizer
             // allow use of 'x' as '*'
             ->replace(search: 'x', replace: '*')
             // allow use of '**' as '^'
-            ->replace(search: '**', replace: '^')
-            // remove spaces
-            ->replace(search: ' ', replace: '');
+            ->replace(search: '**', replace: '^');
 
         $items = [];
         $item = '';
@@ -57,6 +55,7 @@ class Tokenizer
                     $index += 1;
                 }
 
+                echo "operand: $item" . PHP_EOL;
                 $items[] = $item;
                 $item = '';
             }
@@ -66,9 +65,20 @@ class Tokenizer
                 break;
             }
 
+            // skip any spaces
+            while($input->charAt($index)->toString() === ' ') {
+                $index += 1;
+            }
+
             // operator must be the current character
+            echo "operator: {$input->charAt($index)->toString()}" . PHP_EOL;
             $items[] = $input->charAt($index)->toString();
             $index += 1;
+
+            // skip any spaces
+            while($input->charAt($index)->toString() === ' ') {
+                $index += 1;
+            }
         }
 
         return $items;
