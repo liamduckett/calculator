@@ -6,6 +6,7 @@ use Exception;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
 use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
 use Liamduckett\Calculator\Support\Collection;
+use Liamduckett\Calculator\Support\Str;
 
 class Calculator
 {
@@ -15,6 +16,16 @@ class Calculator
     static function calculate(string $input): int
     {
         $tokens = Tokenizer::tokenize($input);
+
+        $input = Str::make($input)
+            // allow use of 'x' as '*'
+            ->replace(search: 'x', replace: '*')
+            // allow use of '**' as '^'
+            ->replace(search: '**', replace: '^')
+            // remove whitespace either side
+            ->trim();
+
+        $tokens = (new Tokenizer($input))->run();
 
         $expression = static::parse($tokens);
 

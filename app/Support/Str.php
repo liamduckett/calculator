@@ -52,6 +52,16 @@ class Str implements Stringable
         return new self($value);
     }
 
+    function is(string $value): bool
+    {
+        return $this->toString() === $value;
+    }
+
+    function isnt(string $value): bool
+    {
+        return !$this->is($value);
+    }
+
     function toString(): string
     {
         return $this->value;
