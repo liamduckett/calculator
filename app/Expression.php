@@ -5,8 +5,8 @@ namespace Liamduckett\Calculator;
 class Expression
 {
     function __construct(
-        public int|Expression $firstOperand,
         public Operator $operator,
+        public int|Expression $firstOperand,
         public int|Expression $secondOperand,
     ) {}
 

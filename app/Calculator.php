@@ -16,82 +16,63 @@ class Calculator
     {
         $tokens = Tokenizer::tokenize($input);
 
-        $expression = static::parse($tokens);
+        $typedTokens = static::addTypes($tokens);
+        $expression = static::parse($typedTokens);
 
-        return static::resolve($expression);
+        return $expression->result();
     }
 
-    /**
-     * @throws InvalidOperandException
-     * @throws InvalidOperatorException
-     */
-    protected static function parse(array $tokens): array
+    protected static function addTypes(array $tokens): array
     {
         $tokens = new Collection($tokens);
 
-        $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
-            if($key % 2 === 0) {
-                if(is_array($item)) {
-                    if(empty($item)) {
-                        throw new InvalidOperandException;
-                    }
-
-                    return static::parse($item);
-                }
-
-                return is_numeric($item) ? (int) $item : throw new InvalidOperandException;
-            } else {
-                return Operator::tryFrom($item) ?? throw new InvalidOperatorException;
-            }
-        });
-
-        if($tokens[array_key_last($tokens->toArray())] instanceof Operator) {
-            throw new InvalidOperandException;
-        }
-
-        $tokens = $tokens->mapWithKeys(function(int|Operator|array $item, int $key) {
-            // array is for nested (bracketed) operations
-            if($key % 2 === 0 and is_array($item)) {
-                return new Expression(...$item);
-            }
-
-            return $item;
+        // assign types
+        $tokens = $tokens->mapWithKeys(function(string $item, int $key) {
+            return match($key % 2 === 0) {
+                true => is_numeric($item) ? (int) $item : throw new InvalidOperandException,
+                false => Operator::tryFrom($item) ?? throw new InvalidOperatorException,
+            };
         });
 
         return $tokens->toArray();
     }
 
-    protected static function resolve(array $expression): int
+    protected static function parse(array $tokens): Expression
     {
-        $expression = new Collection($expression);
+        $tokens = new Collection($tokens);
 
-        // until we have a single result
-        while($expression->count() > 1) {
-            // return the index of the most pressing operation
-            // TODO: this feels like the bracket logic, should this be part of the parser?
-            $operatorIndex = $expression->searchMultiple(
-                [Operator::EXPONENTIATE, Operator::MULTIPLY, Operator::DIVIDE],
-                default: 1
-            );
-
-            // extract the needed items for the most pressing operation
-            [$first, $operator, $second] = $expression->slice($operatorIndex - 1, 3);
-
-            // remove the above items and swap them out for the result of the calculation
-            unset($expression[$operatorIndex - 1]);
-            $expression[$operatorIndex] = $operator->calculate($first, $second);
-            unset($expression[$operatorIndex + 1]);
-
-            // sort by key
-            $expression = $expression
-                ->sortByKeys()
-                ->values();
+        if($tokens->count() === 1) {
+            return $tokens[0];
         }
 
-        if($expression[0] instanceof Expression) {
-            return $expression[0]->result();
-        }
+        // Find most important operator
+        // Split structure by it
+        // Parse each side
 
-        return $expression[0];
+        $mostImportantOperatorIndex = $tokens->searchMultiple(
+            [Operator::EXPONENTIATE, Operator::MULTIPLY, Operator::DIVIDE],
+            default: 1
+        );
+
+        $operator = $tokens->slice(1, $mostImportantOperatorIndex)[0];
+
+        // get the left (of this operator)
+        $left = $tokens->slice(0, $mostImportantOperatorIndex)->toArray();
+        $left = static::extractOperand($left);
+
+        // get the right (of this operator)
+        $right = $tokens->slice($mostImportantOperatorIndex + 1)->toArray();
+        $right = static::extractOperand($right);
+
+        return new Expression($operator, $left, $right);
+    }
+
+    protected static function extractOperand(array $collection): int
+    {
+        // call this function on it, if it is more than one item
+        return match(count($collection) === 1) {
+            true => $collection[0],
+            false => static::parse($collection),
+        };
     }
 }

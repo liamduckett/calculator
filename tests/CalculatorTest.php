@@ -277,4 +277,14 @@ class CalculatorTest extends TestCase
 
         $this->assertSame(13, $output);
     }
+
+    #[Test]
+    function allowsBracketsToHaveMultipleOperators(): void
+    {
+        $input = '(2 ^ 3 * 6 + 12)';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(12, $output);
+    }
 }
