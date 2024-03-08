@@ -33,12 +33,7 @@ class Tokenizer
     function run(): array
     {
         while($this->index < $this->input->length()) {
-            $operand = $this->extractBracketedExpressionIfApplicable();
-
-            // only extract an operand if we didn't find a bracketed one already
-            if($operand === null) {
-                $this->extractOperand();
-            }
+            $this->extractOperand();
 
             // there may not be an operator, this could be the end of the string...
             if($this->currentCharacterIsLastCharacter()) {
@@ -76,9 +71,27 @@ class Tokenizer
         $this->index += 1;
     }
 
+    protected function extractOperand(): void
+    {
+        // only extract an operand if we didn't find a bracketed one already
+        $operand = $this->extractBracketedExpressionIfApplicable();
+
+        if($operand === null) {
+            $operand = '';
+
+            while($this->currentCharacter()->isNumeric()) {
+                $operand .= $this->currentCharacter();
+                $this->incrementCharacter();
+            }
+        }
+
+
+        $this->tokens[] = $operand;
+    }
+
     // TODO: maybe we do this without the ifApplicable
     //  only run the function if we need to
-    protected function extractBracketedExpressionIfApplicable(): ?string
+    protected function extractBracketedExpressionIfApplicable(): ?array
     {
         $operand = null;
 
@@ -106,22 +119,10 @@ class Tokenizer
             $operand = substr($operand, 0, -1);
 
             // recursive call for brackets
-            $this->tokens[] = static::tokenize($operand);
+            $operand = static::tokenize($operand);
         }
 
         return $operand;
-    }
-
-    protected function extractOperand(): void
-    {
-        $operand = '';
-
-        while($this->currentCharacter()->isNumeric()) {
-            $operand .= $this->currentCharacter();
-            $this->incrementCharacter();
-        }
-
-        $this->tokens[] = $operand;
     }
 
     protected function extractOperation(): void
