@@ -14,18 +14,10 @@ class Calculator
      */
     static function calculate(string $input): int
     {
-        echo "input: $input" . PHP_EOL;
         $tokens = Tokenizer::tokenize($input);
 
-        var_dump($tokens);
-
         $typedTokens = static::addTypes($tokens);
-
-        var_dump($typedTokens);
-
         $expression = static::parse($typedTokens);
-
-        var_dump($expression);
 
         return $expression->result();
     }
@@ -112,15 +104,23 @@ class Calculator
         // all operators are left associative so far
         // so find the last instance, of the highest priority one...
 
+        $index = $tokens->searchMultiple(
+            [Operator::EXPONENTIATE],
+            default: null,
+        );
+
         $indexFromEnd = $tokens->reverse()->searchMultiple([
             Operator::ADD,
             Operator::SUBTRACT,
             Operator::DIVIDE,
             Operator::MULTIPLY,
-            Operator::EXPONENTIATE
-        ]);
+        ], default: null);
+
+        if($indexFromEnd !== null) {
+            $index = count($tokens) - 1 - $indexFromEnd;
+        }
 
         // count is 1 higher than last index
-        return count($tokens) - 1 - $indexFromEnd;
+        return $index;
     }
 }

@@ -288,15 +288,15 @@ class CalculatorTest extends TestCase
         $this->assertSame(13, $output);
     }
 
-    //#[Test]
-    //function respectsOrderOfExponentTwo(): void
-    //{
-    //    $input = '2 ^ 3 ^ 2';
-    //
-    //    $output = Calculator::calculate($input);
-    //
-    //    $this->assertSame(512, $output);
-    //}
+    #[Test]
+    function respectsOrderOfExponentTwo(): void
+    {
+        $input = '2 ^ 3 ^ 2';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(512, $output);
+    }
 
     #[Test]
     function allowsBracketsToHaveMultipleOperators(): void
