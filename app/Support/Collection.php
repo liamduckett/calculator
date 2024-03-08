@@ -60,6 +60,12 @@ class Collection implements ArrayAccess, Countable {
         return array_search($needle, $this->items, $strict);
     }
 
+    function reverse(): self
+    {
+        $values = array_reverse($this->items);
+        return new self($values);
+    }
+
     function searchMultiple(array $needles, bool $strict = true, mixed $default = false): mixed
     {
         foreach($needles as $needle)
