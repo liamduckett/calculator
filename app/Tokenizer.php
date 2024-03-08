@@ -73,56 +73,54 @@ class Tokenizer
 
     protected function extractOperand(): void
     {
-        // only extract an operand if we didn't find a bracketed one already
-        $operand = $this->extractBracketedExpressionIfApplicable();
-
-        if($operand === null) {
-            $operand = '';
-
-            while($this->currentCharacter()->isNumeric()) {
-                $operand .= $this->currentCharacter();
-                $this->incrementCharacter();
-            }
-        }
-
+        $operand = match($this->currentCharacter()->is('(')) {
+            true => $this->extractBracketedOperand(),
+            false => $this->extractSimpleOperand(),
+        };
 
         $this->tokens[] = $operand;
     }
 
-    // TODO: maybe we do this without the ifApplicable
-    //  only run the function if we need to
-    protected function extractBracketedExpressionIfApplicable(): ?array
+    protected function extractSimpleOperand(): string
     {
-        $operand = null;
+        $operand = '';
 
-        if($this->currentCharacter()->is('(')) {
-            $openedBrackets = 1;
-
+        while($this->currentCharacter()->isNumeric()) {
+            $operand .= $this->currentCharacter();
             $this->incrementCharacter();
-
-            // loop through until we find our closing bracket
-            while($openedBrackets > 0) {
-                $operand .= $this->currentCharacter();
-
-                if($this->currentCharacter()->is('(')) {
-                    $openedBrackets += 1;
-                }
-
-                if($this->currentCharacter()->is(')')) {
-                    $openedBrackets -= 1;
-                }
-
-                $this->incrementCharacter();
-            }
-
-            // remove the closing bracket
-            $operand = substr($operand, 0, -1);
-
-            // recursive call for brackets
-            $operand = static::tokenize($operand);
         }
 
         return $operand;
+    }
+
+    protected function extractBracketedOperand(): array
+    {
+        $operand = '';
+        $openedBrackets = 1;
+
+        $this->incrementCharacter();
+
+        // loop through until we find our closing bracket
+        // accounting for nested brackets
+        while($openedBrackets > 0) {
+            $operand .= $this->currentCharacter();
+
+            if($this->currentCharacter()->is('(')) {
+                $openedBrackets += 1;
+            }
+
+            if($this->currentCharacter()->is(')')) {
+                $openedBrackets -= 1;
+            }
+
+            $this->incrementCharacter();
+        }
+
+        // remove the closing bracket
+        $operand = substr($operand, 0, -1);
+
+        // recursive call for brackets
+        return static::tokenize($operand);
     }
 
     protected function extractOperation(): void
