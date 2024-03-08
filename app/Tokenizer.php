@@ -71,7 +71,7 @@ class Tokenizer
     protected function skipSpaces(): void
     {
         // skip any spaces
-        while($this->currentCharacter()->toString() === ' ') {
+        while($this->currentCharacter()->is(' ')) {
             $this->incrementCharacter();
         }
     }
@@ -81,6 +81,8 @@ class Tokenizer
         $this->index += 1;
     }
 
+    // TODO: maybe we do this without the ifApplicable
+    //  only run the function if we need to
     protected function extractBracketedExpressionIfApplicable(): ?string
     {
         $operand = null;
@@ -90,7 +92,7 @@ class Tokenizer
 
             $this->incrementCharacter();
 
-            // loop through until we find a closed bracket
+            // loop through until we find our closing bracket
             while($openedBrackets > 0) {
                 $operand .= $this->currentCharacter();
 

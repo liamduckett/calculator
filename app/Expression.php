@@ -14,6 +14,7 @@ class Expression
     {
         if($this->operator === null && $this->secondOperand === null)
         {
+            // TODO: C=could this cause an issue if this is an operation
             return $this->firstOperand;
         }
 

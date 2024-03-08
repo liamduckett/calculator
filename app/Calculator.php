@@ -53,6 +53,7 @@ class Calculator
      */
     protected static function addTypesToOperand(string|array $operand): int|array
     {
+        // if the operand is not simply a number, we need to call this recursively
         if(is_array($operand)) {
             return static::addTypes($operand);
         }
@@ -72,10 +73,13 @@ class Calculator
     {
         $tokens = new Collection($tokens);
 
+        // if the tokens contain nesting, we need to call this recursively
         if($tokens->count() === 1 && is_array($tokens[0])) {
             return static::parse($tokens[0]);
         }
 
+        // if the tokens are just one item
+        // create an expression from it
         if($tokens->count() === 1) {
             return new Expression($tokens[0]);
         }
@@ -117,14 +121,17 @@ class Calculator
 
     protected static function findOperationIndex(Collection $tokens): int
     {
-        // all operators are left associative so far
-        // so find the last instance, of the highest priority one...
+        // priority is the reverse of BIDMAS
+        // because we are assembling (to run in the opposite order)
 
+        // exponentiation is right associative, so need to find the first one
         $index = $tokens->searchMultiple(
             [Operator::EXPONENTIATE],
             default: null,
         );
 
+        // these operations are left associative, so need to find the last one
+        // (of the lowest priority)
         $indexFromEnd = $tokens->reverse()->searchMultiple([
             Operator::ADD,
             Operator::SUBTRACT,
