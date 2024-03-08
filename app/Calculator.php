@@ -20,8 +20,6 @@ class Calculator
         $typedTokens = static::addTypes($tokens);
         $expression = static::parse($typedTokens);
 
-        var_dump($expression);
-
         return $expression->result();
     }
 
@@ -40,6 +38,12 @@ class Calculator
                 false => Operator::tryFrom($item) ?? throw new InvalidOperatorException,
             };
         });
+
+        // expression is invalid if it ends with an operation?
+        $lastToken = $tokens[array_key_last($tokens->toArray())];
+        if($lastToken instanceof Operator) {
+            throw new InvalidOperandException;
+        }
 
         return $tokens->toArray();
     }
