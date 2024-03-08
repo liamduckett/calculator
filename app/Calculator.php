@@ -2,7 +2,6 @@
 
 namespace Liamduckett\Calculator;
 
-use Exception;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
 use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
 use Liamduckett\Calculator\Support\Collection;
@@ -10,7 +9,8 @@ use Liamduckett\Calculator\Support\Collection;
 class Calculator
 {
     /**
-     * @throws Exception
+     * @throws InvalidOperatorException
+     * @throws InvalidOperandException
      */
     static function calculate(string $input): int
     {
@@ -32,15 +32,10 @@ class Calculator
 
         // assign types
         $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
-            if($key % 2 === 0) {
-                if(is_array($item)) {
-                    return static::addTypes($item);
-                }
-
-                return is_numeric($item) ? (int) $item : throw new InvalidOperandException;
-            } else {
-                return Operator::tryFrom($item) ?? throw new InvalidOperatorException;
-            }
+            return match($key % 2 === 0) {
+                true => static::addTypesToOperand($item),
+                false => static::addTypesToOperator($item),
+            };
         });
 
         // expression is invalid if it ends with an operation?
@@ -50,6 +45,27 @@ class Calculator
         }
 
         return $tokens->toArray();
+    }
+
+    /**
+     * @throws InvalidOperatorException
+     * @throws InvalidOperandException
+     */
+    protected static function addTypesToOperand(string|array $operand): int|array
+    {
+        if(is_array($operand)) {
+            return static::addTypes($operand);
+        }
+
+        return is_numeric($operand) ? (int) $operand : throw new InvalidOperandException;
+    }
+
+    /**
+     * @throws InvalidOperatorException
+     */
+    protected static function addTypesToOperator(string $operator): Operator
+    {
+        return Operator::tryFrom($operator) ?? throw new InvalidOperatorException;
     }
 
     protected static function parse(array $tokens): Expression
