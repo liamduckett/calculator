@@ -169,6 +169,16 @@ class CalculatorTest extends TestCase
     }
 
     #[Test]
+    function allowSingleNumber(): void
+    {
+        $input = '5';
+
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(5, $output);
+    }
+
+    #[Test]
     function allowsBrackets(): void
     {
         $input = '(5 + 3)';

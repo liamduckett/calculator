@@ -17,8 +17,15 @@ class Calculator
         echo "input: $input" . PHP_EOL;
         $tokens = Tokenizer::tokenize($input);
 
+        var_dump($tokens);
+
         $typedTokens = static::addTypes($tokens);
+
+        var_dump($typedTokens);
+
         $expression = static::parse($typedTokens);
+
+        var_dump($expression);
 
         return $expression->result();
     }
@@ -53,7 +60,7 @@ class Calculator
         $tokens = new Collection($tokens);
 
         if($tokens->count() === 1) {
-            return $tokens[0];
+            return new Expression($tokens[0]);
         }
 
         // Find most important operator
@@ -72,7 +79,7 @@ class Calculator
         $right = $tokens->slice($operationIndex + 1)->toArray();
         $right = static::extractOperand($right);
 
-        return new Expression($operator, $left, $right);
+        return new Expression($left, $operator, $right);
     }
 
     protected static function extractOperand(array $collection): int|Expression

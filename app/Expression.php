@@ -5,13 +5,18 @@ namespace Liamduckett\Calculator;
 class Expression
 {
     function __construct(
-        public Operator $operator,
         public int|Expression $firstOperand,
-        public int|Expression $secondOperand,
+        public Operator|null $operator = null,
+        public int|Expression|null $secondOperand = null,
     ) {}
 
     function result(): int
     {
+        if($this->operator === null && $this->secondOperand === null)
+        {
+            return $this->firstOperand;
+        }
+
         $first = match($this->firstOperand instanceof Expression) {
             true => $this->firstOperand->result(),
             false => $this->firstOperand,
