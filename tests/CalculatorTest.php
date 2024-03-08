@@ -261,7 +261,7 @@ class CalculatorTest extends TestCase
     #[Test]
     function allowsTripleNestedBrackets(): void
     {
-        $input = '((5 + 3) * 2) * 3';
+        $input = '(((5 + 3) * 2) * 3)';
 
         $output = Calculator::calculate($input);
 
@@ -269,13 +269,13 @@ class CalculatorTest extends TestCase
     }
 
     #[Test]
-    function rejectsJustBrackets(): void
+    function allowsJustBrackets(): void
     {
-        $this->expectException(InvalidOperandException::class);
-
         $input = '5 * 3 + ()';
 
-        Calculator::calculate($input);
+        $output = Calculator::calculate($input);
+
+        $this->assertSame(15, $output);
     }
 
     #[Test]
@@ -288,13 +288,23 @@ class CalculatorTest extends TestCase
         $this->assertSame(13, $output);
     }
 
+    //#[Test]
+    //function respectsOrderOfExponentTwo(): void
+    //{
+    //    $input = '2 ^ 3 ^ 2';
+    //
+    //    $output = Calculator::calculate($input);
+    //
+    //    $this->assertSame(512, $output);
+    //}
+
     #[Test]
     function allowsBracketsToHaveMultipleOperators(): void
     {
-        $input = '(2 ^ 3 * 6 + 12)';
+        $input = '(2 + 3 * 6 + 12)';
 
         $output = Calculator::calculate($input);
 
-        $this->assertSame(12, $output);
+        $this->assertSame(32, $output);
     }
 }

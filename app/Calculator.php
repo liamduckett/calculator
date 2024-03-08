@@ -39,11 +39,16 @@ class Calculator
         $tokens = new Collection($tokens);
 
         // assign types
-        $tokens = $tokens->mapWithKeys(function(string $item, int $key) {
-            return match($key % 2 === 0) {
-                true => is_numeric($item) ? (int) $item : throw new InvalidOperandException,
-                false => Operator::tryFrom($item) ?? throw new InvalidOperatorException,
-            };
+        $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
+            if($key % 2 === 0) {
+                if(is_array($item)) {
+                    return static::addTypes($item);
+                }
+
+                return is_numeric($item) ? (int) $item : throw new InvalidOperandException;
+            } else {
+                return Operator::tryFrom($item) ?? throw new InvalidOperatorException;
+            }
         });
 
         // expression is invalid if it ends with an operation?
@@ -58,6 +63,10 @@ class Calculator
     protected static function parse(array $tokens): Expression
     {
         $tokens = new Collection($tokens);
+
+        if($tokens->count() === 1 && is_array($tokens[0])) {
+            return static::parse($tokens[0]);
+        }
 
         if($tokens->count() === 1) {
             return new Expression($tokens[0]);
@@ -84,6 +93,13 @@ class Calculator
 
     protected static function extractOperand(array $collection): int|Expression
     {
+        // if the first item of this array is an array
+        // is if(if_array($collection[0])
+
+        if(count($collection) === 1 && is_array($collection[0])) {
+            return static::extractOperand($collection[0]);
+        }
+
         // call this function on it, if it is more than one item
         return match(count($collection) === 1) {
             true => $collection[0],

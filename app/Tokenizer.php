@@ -16,6 +16,8 @@ class Tokenizer
             ->replace(search: 'x', replace: '*')
             // allow use of '**' as '^'
             ->replace(search: '**', replace: '^')
+            // empty brackets are always 0
+            ->replace(search: '()', replace :'0')
             // remove whitespace either side
             ->trim();
 
