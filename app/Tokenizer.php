@@ -35,11 +35,6 @@ class Tokenizer
         while($this->index < $this->input->length()) {
             $operand = $this->extractBracketedExpressionIfApplicable();
 
-            // there may not be an operand here, this could be the end of the string...
-            if($this->currentCharacterIsLastCharacter()) {
-                break;
-            }
-
             // only extract an operand if we didn't find a bracketed one already
             if($operand === null) {
                 $this->extractOperand();
