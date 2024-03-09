@@ -37,6 +37,7 @@ class Calculator
         $tokens = $tokens->mapWithKeys(function(string|array $item, int $key) {
             return match($key % 2 === 0) {
                 true => static::addTypesToOperand($item),
+                /** @phpstan-ignore-next-line $item is always a string here (tokenizer) */
                 false => static::addTypesToOperator($item),
             };
         });

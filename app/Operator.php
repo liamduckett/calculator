@@ -2,6 +2,8 @@
 
 namespace Liamduckett\Calculator;
 
+use Liamduckett\Calculator\Exceptions\InvalidExpressionException;
+
 enum Operator: string
 {
     case ADD = '+';
@@ -14,17 +16,19 @@ enum Operator: string
      * @param int|Expression $first
      * @param int|Expression $second
      * @return int
+     *
+     * @throws InvalidExpressionException
      */
     function calculate(int|Expression $first, int|Expression $second): int
     {
-        $first = match($first instanceof Expression) {
-            true => $first->result(),
-            false => $first,
+        $first = match(gettype($first)) {
+            'object' => $first->result(),
+            'integer' => $first,
         };
 
-        $second = match($second instanceof Expression) {
-            true => $second->result(),
-            false => $second,
+        $second = match(gettype($second)) {
+            'object' => $second->result(),
+            'integer' => $second,
         };
 
         return match($this) {
