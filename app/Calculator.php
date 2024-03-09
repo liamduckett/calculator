@@ -122,22 +122,22 @@ class Calculator
     }
 
     /**
-     * @param list<mixed> $collection
+     * @param list<mixed> $operand
      * @return int|Expression
      */
-    protected static function extractOperand(array $collection): int|Expression
+    protected static function extractOperand(array $operand): int|Expression
     {
         // if the first item of this array is an array
         // is if(if_array($collection[0])
 
-        if(count($collection) === 1 && is_array($collection[0])) {
-            return static::extractOperand($collection[0]);
+        if(count($operand) === 1 && is_array($operand[0])) {
+            return static::extractOperand($operand[0]);
         }
 
         // call this function on it, if it is more than one item
-        return match(count($collection) === 1) {
-            true => $collection[0],
-            false => static::parse($collection),
+        return match(count($operand) === 1) {
+            true => $operand[0],
+            false => static::parse($operand),
         };
     }
 
