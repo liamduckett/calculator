@@ -26,9 +26,9 @@ class Expression
      */
     function result(): int
     {
-        if($this->operator === null && $this->secondOperand === null && !($this->firstOperand instanceof Expression))
+        // if this is a simple expression
+        if($this->operator === null && $this->secondOperand === null && gettype($this->firstOperand) === 'integer')
         {
-            // TODO: could this cause an issue if this is an operation
             return $this->firstOperand;
         }
 
