@@ -137,7 +137,7 @@ class Calculator
     }
 
     /**
-     * @param Collection $tokens
+     * @param Collection<mixed> $tokens
      * @return int
      */
     protected static function findOperationIndex(Collection $tokens): int

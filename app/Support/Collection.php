@@ -5,17 +5,21 @@ namespace Liamduckett\Calculator\Support;
 use ArrayAccess;
 use Countable;
 
+/**
+ * @template TValue
+ * @implements ArrayAccess<int, TValue>
+ */
 class Collection implements ArrayAccess, Countable {
     /**
-     * @param list<mixed> $items
+     * @param list<TValue> $items
      */
     function __construct(
         protected array $items,
     ) {}
 
     /**
-     * @param list<mixed> $items
-     * @return self
+     * @param list<TValue> $items
+     * @return self<TValue>
      */
     static function make(array $items): self
     {
@@ -23,7 +27,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @return list<mixed>
+     * @return list<TValue>
      */
     function toArray(): array
     {
@@ -40,7 +44,7 @@ class Collection implements ArrayAccess, Countable {
 
     /**
      * @param callable $callable
-     * @return self
+     * @return self<TValue>
      */
     function mapWithKeys(callable $callable): self
     {
@@ -54,33 +58,13 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @return self
-     */
-    function sortByKeys(): self
-    {
-        $items = $this->items;
-        ksort($items);
-        return new self($items);
-    }
-
-    /**
-     * @return self
-     */
-    function values(): self
-    {
-        $items = array_values($this->items);
-        return new self($items);
-    }
-
-    /**
      * @param int $offset
      * @param int|null $length
-     * @param bool $preserveKeys
-     * @return self
+     * @return self<TValue>
      */
-    function slice(int $offset, ?int $length = null, bool $preserveKeys = false): self
+    function slice(int $offset, ?int $length = null): self
     {
-        $items = array_slice($this->items, $offset, $length, $preserveKeys);
+        $items = array_slice($this->items, $offset, $length);
         return new self($items);
     }
 
@@ -95,7 +79,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @return self
+     * @return self<TValue>
      */
     function reverse(): self
     {
@@ -124,7 +108,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @param $offset
+     * @param int $offset
      * @return bool
      */
     function offsetExists($offset): bool
@@ -133,7 +117,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @param $offset
+     * @param int $offset
      * @return mixed
      */
     function offsetGet($offset): mixed
@@ -142,21 +126,17 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @param $offset
-     * @param $value
+     * @param int $offset
+     * @param TValue $value
      * @return void
      */
     function offsetSet($offset, $value): void
     {
-        if (is_null($offset)) {
-            $this->items[] = $value;
-        } else {
-            $this->items[$offset] = $value;
-        }
+        $this->items[$offset] = $value;
     }
 
     /**
-     * @param $offset
+     * @param int $offset
      * @return void
      */
     function offsetUnset($offset): void

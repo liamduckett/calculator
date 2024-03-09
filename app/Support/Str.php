@@ -63,7 +63,7 @@ class Str implements Stringable
      * @param string $pattern
      * @param int $limit
      * @param int $flags
-     * @return Collection
+     * @return Collection<string>
      */
     function pregSplit(string $pattern, int $limit = -1, int $flags = 0): Collection
     {
