@@ -97,9 +97,9 @@ class Calculator
         }
 
         // if the tokens are just one item
-        // create an expression from it
+        // create a simple expression from it
         if($tokens->count() === 1) {
-            return new Expression($tokens[0]);
+            return Expression::makeSimple($tokens[0]);
         }
 
         // Find most important operator
@@ -118,7 +118,7 @@ class Calculator
         $right = $tokens->slice($operationIndex + 1)->toArray();
         $right = static::extractOperand($right);
 
-        return new Expression($left, $operator, $right);
+        return Expression::make($left, $operator, $right);
     }
 
     /**

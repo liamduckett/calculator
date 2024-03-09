@@ -12,12 +12,20 @@ class Expression
      * @param int|Expression|null $secondOperand
      */
     function __construct(
-        // TODO: constructing an Expression with just an Expression first operand shouldnt be allowed
-        //  implement other constructors
         public int|Expression $firstOperand,
-        public Operator|null $operator = null,
-        public int|Expression|null $secondOperand = null,
+        public Operator|null $operator,
+        public int|Expression|null $secondOperand,
     ) {}
+
+    static function make(int|Expression $firstOperand, Operator $operator, int|Expression $secondOperand): self
+    {
+        return new self($firstOperand, $operator, $secondOperand);
+    }
+
+    static function makeSimple(int $firstOperand): self
+    {
+        return new self($firstOperand, null, null);
+    }
 
     /**
      * @return int
