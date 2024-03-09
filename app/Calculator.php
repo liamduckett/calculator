@@ -2,6 +2,7 @@
 
 namespace Liamduckett\Calculator;
 
+use Liamduckett\Calculator\Exceptions\InvalidExpressionException;
 use Liamduckett\Calculator\Exceptions\InvalidOperandException;
 use Liamduckett\Calculator\Exceptions\InvalidOperatorException;
 use Liamduckett\Calculator\Support\Collection;
@@ -9,8 +10,12 @@ use Liamduckett\Calculator\Support\Collection;
 class Calculator
 {
     /**
-     * @throws InvalidOperatorException
+     * @param string $input
+     * @return int
+     *
+     * @throws InvalidExpressionException
      * @throws InvalidOperandException
+     * @throws InvalidOperatorException
      */
     static function calculate(string $input): int
     {
