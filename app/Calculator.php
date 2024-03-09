@@ -23,8 +23,8 @@ class Calculator
     }
 
     /**
-     * @param array<mixed> $tokens
-     * @return array<mixed>
+     * @param list<mixed> $tokens
+     * @return list<mixed>
      *
      * @throws InvalidOperandException
      * @throws InvalidOperatorException
@@ -51,8 +51,8 @@ class Calculator
     }
 
     /**
-     * @param string|array<mixed> $operand
-     * @return int|array<mixed>
+     * @param string|list<mixed> $operand
+     * @return int|list<mixed>
      *
      * @throws InvalidOperatorException
      * @throws InvalidOperandException
@@ -79,7 +79,7 @@ class Calculator
     }
 
     /**
-     * @param array<mixed> $tokens
+     * @param list<mixed> $tokens
      * @return Expression
      */
     protected static function parse(array $tokens): Expression
@@ -117,7 +117,7 @@ class Calculator
     }
 
     /**
-     * @param array<mixed> $collection
+     * @param list<mixed> $collection
      * @return int|Expression
      */
     protected static function extractOperand(array $collection): int|Expression

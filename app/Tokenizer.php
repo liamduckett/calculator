@@ -7,12 +7,12 @@ use Liamduckett\Calculator\Support\Str;
 class Tokenizer
 {
     protected int $index = 0;
-    /** @var array<mixed> $tokens  */
+    /** @var list<mixed> $tokens  */
     protected array $tokens = [];
 
     /**
      * @param string $input
-     * @return array<mixed>
+     * @return list<mixed>
      */
     static function tokenize(string $input): array
     {
@@ -39,7 +39,7 @@ class Tokenizer
     ) {}
 
     /**
-     * @return array<mixed>
+     * @return list<mixed>
      */
     function run(): array
     {
@@ -123,7 +123,7 @@ class Tokenizer
     }
 
     /**
-     * @return array<mixed>
+     * @return list<mixed>
      */
     protected function extractBracketedOperand(): array
     {

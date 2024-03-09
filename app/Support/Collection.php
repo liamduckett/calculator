@@ -7,14 +7,14 @@ use Countable;
 
 class Collection implements ArrayAccess, Countable {
     /**
-     * @param array<mixed> $items
+     * @param list<mixed> $items
      */
     function __construct(
         protected array $items,
     ) {}
 
     /**
-     * @param array<mixed> $items
+     * @param list<mixed> $items
      * @return self
      */
     static function make(array $items): self
@@ -23,7 +23,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @return array<mixed>
+     * @return list<mixed>
      */
     function toArray(): array
     {
@@ -104,7 +104,7 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
-     * @param array<mixed> $needles
+     * @param list<mixed> $needles
      * @param bool $strict
      * @param mixed $default
      * @return mixed
