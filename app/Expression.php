@@ -4,12 +4,20 @@ namespace Liamduckett\Calculator;
 
 class Expression
 {
+    /**
+     * @param int|Expression $firstOperand
+     * @param Operator|null $operator
+     * @param int|Expression|null $secondOperand
+     */
     function __construct(
         public int|Expression $firstOperand,
         public Operator|null $operator = null,
         public int|Expression|null $secondOperand = null,
     ) {}
 
+    /**
+     * @return int
+     */
     function result(): int
     {
         if($this->operator === null && $this->secondOperand === null)

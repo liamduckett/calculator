@@ -7,8 +7,13 @@ use Liamduckett\Calculator\Support\Str;
 class Tokenizer
 {
     protected int $index = 0;
+    /** @var array<mixed> $tokens  */
     protected array $tokens = [];
 
+    /**
+     * @param string $input
+     * @return array<mixed>
+     */
     static function tokenize(string $input): array
     {
         $input = Str::make($input)
@@ -26,10 +31,16 @@ class Tokenizer
         return $tokenizer->run();
     }
 
+    /**
+     * @param Str $input
+     */
     protected function __construct(
         protected Str $input,
     ) {}
 
+    /**
+     * @return array<mixed>
+     */
     function run(): array
     {
         while($this->index < $this->input->length()) {
@@ -48,16 +59,25 @@ class Tokenizer
         return $this->tokens;
     }
 
+    /**
+     * @return Str
+     */
     protected function currentCharacter(): Str
     {
         return $this->input->charAt($this->index);
     }
 
+    /**
+     * @return bool
+     */
     protected function currentCharacterIsLastCharacter(): bool
     {
         return $this->index === $this->input->length();
     }
 
+    /**
+     * @return void
+     */
     protected function skipSpaces(): void
     {
         // skip any spaces
@@ -66,11 +86,17 @@ class Tokenizer
         }
     }
 
+    /**
+     * @return void
+     */
     protected function incrementCharacter(): void
     {
         $this->index += 1;
     }
 
+    /**
+     * @return void
+     */
     protected function extractOperand(): void
     {
         $operand = match($this->currentCharacter()->is('(')) {
@@ -81,6 +107,9 @@ class Tokenizer
         $this->tokens[] = $operand;
     }
 
+    /**
+     * @return string
+     */
     protected function extractSimpleOperand(): string
     {
         $operand = '';
@@ -93,6 +122,9 @@ class Tokenizer
         return $operand;
     }
 
+    /**
+     * @return array<mixed>
+     */
     protected function extractBracketedOperand(): array
     {
         $operand = '';
@@ -123,6 +155,9 @@ class Tokenizer
         return static::tokenize($operand);
     }
 
+    /**
+     * @return void
+     */
     protected function extractOperation(): void
     {
         // operators are only 1 character long

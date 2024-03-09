@@ -23,6 +23,9 @@ class Calculator
     }
 
     /**
+     * @param array<mixed> $tokens
+     * @return array<mixed>
+     *
      * @throws InvalidOperandException
      * @throws InvalidOperatorException
      */
@@ -48,6 +51,9 @@ class Calculator
     }
 
     /**
+     * @param string|array<mixed> $operand
+     * @return int|array<mixed>
+     *
      * @throws InvalidOperatorException
      * @throws InvalidOperandException
      */
@@ -62,6 +68,9 @@ class Calculator
     }
 
     /**
+     * @param string $operator
+     * @return Operator
+     *
      * @throws InvalidOperatorException
      */
     protected static function addTypesToOperator(string $operator): Operator
@@ -69,6 +78,10 @@ class Calculator
         return Operator::tryFrom($operator) ?? throw new InvalidOperatorException;
     }
 
+    /**
+     * @param array<mixed> $tokens
+     * @return Expression
+     */
     protected static function parse(array $tokens): Expression
     {
         $tokens = new Collection($tokens);
@@ -103,6 +116,10 @@ class Calculator
         return new Expression($left, $operator, $right);
     }
 
+    /**
+     * @param array<mixed> $collection
+     * @return int|Expression
+     */
     protected static function extractOperand(array $collection): int|Expression
     {
         // if the first item of this array is an array
@@ -119,6 +136,10 @@ class Calculator
         };
     }
 
+    /**
+     * @param Collection $tokens
+     * @return int
+     */
     protected static function findOperationIndex(Collection $tokens): int
     {
         // priority is the reverse of BIDMAS

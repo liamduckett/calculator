@@ -10,6 +10,11 @@ enum Operator: string
     case DIVIDE = '/';
     case EXPONENTIATE = '^';
 
+    /**
+     * @param int|Expression $first
+     * @param int|Expression $second
+     * @return int
+     */
     function calculate(int|Expression $first, int|Expression $second): int
     {
         $first = match($first instanceof Expression) {
