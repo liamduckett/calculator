@@ -43,6 +43,26 @@ class Collection implements ArrayAccess, Countable {
     }
 
     /**
+     * @return TValue
+     */
+    function first(): mixed
+    {
+        $items = $this->items;
+
+        return $items[array_key_first($items)];
+    }
+
+    /**
+     * @return TValue
+     */
+    function last(): mixed
+    {
+        $items = $this->items;
+
+        return $items[array_key_last($items)];
+    }
+
+    /**
      * @param callable $callable
      * @return self<TValue>
      */

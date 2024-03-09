@@ -47,9 +47,8 @@ class Calculator
             };
         });
 
-        // expression is invalid if it ends with an operation?
-        $lastToken = $tokens[array_key_last($tokens->toArray())];
-        if($lastToken instanceof Operator) {
+        // expression is invalid if it ends with an operation
+        if($tokens->last() instanceof Operator) {
             throw new InvalidOperandException;
         }
 
