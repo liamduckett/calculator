@@ -123,20 +123,18 @@ class Calculator
 
     /**
      * @param list<mixed> $operand
-     * @return int|Expression
+     * @return Expression
      */
-    protected static function extractOperand(array $operand): int|Expression
+    protected static function extractOperand(array $operand): Expression
     {
-        // if the first item of this array is an array
-        // is if(if_array($collection[0])
-
+        // if this has one item, and it is an array
         if(count($operand) === 1 && is_array($operand[0])) {
             return static::extractOperand($operand[0]);
         }
 
         // call this function on it, if it is more than one item
         return match(count($operand) === 1) {
-            true => $operand[0],
+            true => Expression::makeSimple($operand[0]),
             false => static::parse($operand),
         };
     }

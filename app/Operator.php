@@ -13,23 +13,17 @@ enum Operator: string
     case EXPONENTIATE = '^';
 
     /**
-     * @param int|Expression $first
-     * @param int|Expression $second
+     * @param Expression $first
+     * @param Expression $second
      * @return int
      *
      * @throws InvalidExpressionException
      */
-    function calculate(int|Expression $first, int|Expression $second): int
+    function calculate(Expression $first, Expression $second): int
     {
-        $first = match(gettype($first)) {
-            'object' => $first->result(),
-            'integer' => $first,
-        };
+        $first = $first->result();
 
-        $second = match(gettype($second)) {
-            'object' => $second->result(),
-            'integer' => $second,
-        };
+        $second = $second->result();
 
         return match($this) {
             self::ADD => $first + $second,

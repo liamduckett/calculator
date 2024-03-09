@@ -35,20 +35,20 @@ class Expression
     function result(): int
     {
         // if this is a simple expression
-        if($this->operator === null && $this->secondOperand === null && gettype($this->firstOperand) === 'integer')
+        if($this->secondOperand === null && gettype($this->firstOperand) === 'integer')
         {
             return $this->firstOperand;
         }
 
         // https://github.com/phpstan/phpstan/issues/10585
         $first = match(gettype($this->firstOperand)) {
-            'object' => $this->firstOperand->result(),
-            'integer' => $this->firstOperand,
+            'object' => $this->firstOperand,
+            'integer' => self::makeSimple($this->firstOperand),
         };
 
         $second = match(gettype($this->secondOperand)) {
-            'object' => $this->secondOperand->result(),
-            'integer' => $this->secondOperand,
+            'object' => $this->secondOperand,
+            'integer' => self::makeSimple($this->secondOperand),
             'NULL' => throw new InvalidExpressionException,
         };
 
