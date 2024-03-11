@@ -52,6 +52,11 @@ class Expression
             'NULL' => throw new InvalidExpressionException,
         };
 
-        return $this->operator->calculate($first, $second);
+        $operator = match(gettype($this->operator)) {
+            'object' => $this->operator,
+            'NULL' => throw new InvalidExpressionException,
+        };
+
+        return $operator->calculate($first, $second);
     }
 }
